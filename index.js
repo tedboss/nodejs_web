@@ -1,17 +1,33 @@
-var http = require('http');
+const rh = require('./request-handler');
+const server = require('dgram').createSocket('udp4');
+const my_utils = require('./my-utils');
 
-var server = http.createServer(function(request, response) {
+var bb = rh.createGetVarDValuePackage(12);
+my_utils.printHighSpeedPackage(bb);
 
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    for (var i = 0; i < 1000; i++)
-    {
-        response.write("Hello World! ahihi ahihi " + i + "\n");
-    }
-    response.end("Hello World! ahihi ahihi");
-
+server.on('error', (err) => {
+  console.log('Error occurss ' + err);
+  server.close();
 });
 
-var port = 1337;
-server.listen(port);
+server.on('message', (msg, rinfo) => {
+  
+});
 
-console.log("Server running at http://localhost:%d", port);
+server.on('listening', () => {
+  const address = server.address();
+  console.log(`Server listening ${address.address}:${address.port}`);
+});
+
+server.bind(20000);
+
+// server.send(bb, 0, bb.length, 10040, '192.168.0.20', (err) => {
+//   if (err)
+//   {
+//     console.log("ERROR SENDING" + err);
+//     server.close();
+//   } else 
+//   {
+//     console.log("SEND SUCCESSFUL");
+//   }
+// });
